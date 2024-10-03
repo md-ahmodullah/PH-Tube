@@ -10,6 +10,14 @@ const toStringDateTime = (time) => {
     return `${hours}h ${minutes}m ${remainingSec}s ago`;
 }
 
+// remove all active color function
+const removeColor = () => {
+    const btnClass = document.getElementsByClassName('category-btn');
+    for (const btn of btnClass) {
+        btn.classList.remove('active')
+    }
+}
+
 
 // Load and fetch Categories
 const loadCategories = async() => {
@@ -28,6 +36,10 @@ const loadCategoryVideos = async(id) => {
     try {
         const res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`);
         const data = await res.json();
+        removeColor();
+        const activeButton = document.getElementById(`btn-${id}`);
+        activeButton.classList.add("active");
+        
         displayVideos(data.category);
         
     } catch (error) {
@@ -43,7 +55,7 @@ const displayCategories = (data) => {
         const buttonContainer = document.createElement('div');
         buttonContainer.innerHTML = 
         `
-        <button onclick="loadCategoryVideos(${categoryList.category_id})" class="btn">${category}</button>
+        <button id="btn-${categoryList.category_id}" onclick="loadCategoryVideos(${categoryList.category_id})" class="btn category-btn">${category}</button>
         `;
 
         // add button to container
