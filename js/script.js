@@ -1,6 +1,5 @@
 // Catch DOM Element
 const categoryEl = document.getElementById('category-container');
-const videosEl = document.getElementById('videos');
 
 // time converter function
 const toStringDateTime = (time) => {
@@ -64,6 +63,25 @@ const loadVideos = async() => {
 }
 
 const displayVideos = (videos) => {
+    const videoContainer = document.getElementById('videos');
+    videoContainer.innerHTML = '';
+
+    if (videos.length == 0) {
+        videoContainer.classList.remove('grid')
+        videoContainer.innerHTML = `
+            <div class="min-h-[300px] flex flex-col justify-center items-center gap-5">
+                <img src="./assets/Icon.png" />
+                <h2 class="text-3xl text-black font-extrabold">
+                No Content Found.
+                </h2>
+            </div>
+            `;
+        return
+    }
+    else{
+        videoContainer.classList.add('grid')
+    }
+
     videos.map((video) => {
         const card = document.createElement('div');
         card.classList = "card card-compact";
@@ -98,7 +116,7 @@ const displayVideos = (videos) => {
         `;
         card.innerHTML = cardElement;
 
-        videosEl.appendChild(card)
+        videoContainer.appendChild(card)
     })
 }
 
