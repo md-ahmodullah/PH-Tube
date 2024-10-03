@@ -1,3 +1,6 @@
+// Catch DOM Element
+const categoryEl = document.getElementById('category-container');
+
 // step-1 : Load data, fetch and display data
 
 const loadCategories = async() => {
@@ -15,7 +18,14 @@ const loadCategories = async() => {
 const displayCategories = (data) => {
     data.map((categoryList) => {
         const category = categoryList.category;
-        console.log(category)
+        
+        // create button
+        const button = document.createElement('button');
+        button.classList = "btn";
+        button.innerText = category;
+
+        // add button to container
+        categoryEl.appendChild(button);
     })
 }
 
