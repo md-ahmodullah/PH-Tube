@@ -64,17 +64,51 @@ const displayCategories = (data) => {
 };
 
 // Load and fetch videos
-const loadVideos = async () => {
+const loadVideos = async (searchText = "") => {
   try {
     const res = await fetch(
-      "https://openapi.programming-hero.com/api/phero-tube/videos"
+      `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
     );
     const data = await res.json();
+    loadViews(data.videos);
     displayVideos(data.videos);
   } catch (error) {
     console.log(`ERROR : ${error}`);
   }
 };
+
+// load views
+const loadViews = (sortVideos) => {
+  const viewList = [];
+  sortVideos.map((sortVideo) => {
+    const views = sortVideo.others.views;
+    const viewsNum = parseInt(views.split("K")[0]);
+    viewList.push(viewsNum);
+  });
+  sortArray(viewList);
+};
+
+// fuction to array sort
+const sortArray = (array) => {
+  array.sort((a, b) => b - a);
+  // console.log(array);
+};
+
+const loadSort = async () => {
+  try {
+    const res = await fetch(
+      `https://openapi.programming-hero.com/api/phero-tube/videos`
+    );
+    const data = await res.json();
+    console.log(data.videos);
+    displayVideos(data.videos);
+  } catch (error) {
+    console.log(`ERROR : ${error}`);
+  }
+};
+loadSort();
+// display sort
+document.getElementById("sort").addEventListener("click", () => {});
 
 // Details Button
 const loadDetails = async (id) => {
@@ -87,13 +121,21 @@ const loadDetails = async (id) => {
 
 // Display Details
 const displayDetails = (eachVideos) => {
-  const ID = eachVideos.video.video_id;
-  const button = document.getElementById(ID);
-  button.addEventListener("click", () => {
-    alert("You have done Well");
-  });
+  const image = eachVideos.video.thumbnail;
+  const description = eachVideos.video.description;
+  console.log(image, description);
+
+  const modalContainer = document.getElementById("modal-container");
+  const modalContent = `
+  <img src="${image}">
+  <p>${description}</p>`;
+
+  modalContainer.innerHTML = modalContent;
+
+  document.getElementById("customModal").showModal();
 };
 
+// Display Videos
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("videos");
   videoContainer.innerHTML = "";
@@ -150,18 +192,11 @@ const displayVideos = (videos) => {
                         }
                     </div>
                 </div>
-                <div><button class="btn" onclick="loadDetails('${
-                  video.video_id
-                }')" id="${video.video_id}">View Detail</button>
-                <dialog id="${video.video_id}" class="modal">
-                    <div class="modal-box">
-                    <h3 class="text-lg font-bold">Hello!</h3>
-                    <p class="py-4">Press ESC key or click outside to close</p>
-                    </div>
-                    <form method="dialog" class="modal-backdrop">
-                    <button>close</button>
-                    </form>
-                </dialog>
+                <div>
+                <button class="btn btn-xs btn-error" 
+                        onclick="loadDetails('${video.video_id}')" 
+                        >View Details
+                </button>
                 </div>
             </div>
             
@@ -172,6 +207,14 @@ const displayVideos = (videos) => {
     videoContainer.appendChild(card);
   });
 };
+
+// catch input from search box
+document.getElementById("search-text").addEventListener("keyup", (event) => {
+  const text = event.target.value;
+  loadVideos(text);
+});
+
+// sort function
 
 loadCategories();
 loadVideos();
