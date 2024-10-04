@@ -84,6 +84,8 @@ const loadViews = (sortVideos) => {
     const views = sortVideo.others.views;
     const viewsNum = parseInt(views.split("K")[0]);
     viewList.push(viewsNum);
+    const viewID = sortVideo.video_id;
+    loadSort(viewID);
   });
   sortArray(viewList);
 };
@@ -91,24 +93,22 @@ const loadViews = (sortVideos) => {
 // fuction to array sort
 const sortArray = (array) => {
   array.sort((a, b) => b - a);
-  // console.log(array);
 };
 
 const loadSort = async () => {
   try {
     const res = await fetch(
-      `https://openapi.programming-hero.com/api/phero-tube/videos`
+      `https://openapi.programming-hero.com/api/phero-tube/video/`
     );
     const data = await res.json();
-    console.log(data.videos);
-    displayVideos(data.videos);
   } catch (error) {
     console.log(`ERROR : ${error}`);
   }
 };
-loadSort();
 // display sort
-document.getElementById("sort").addEventListener("click", () => {});
+document.getElementById("sort").addEventListener("click", () => {
+  loadVideos();
+});
 
 // Details Button
 const loadDetails = async (id) => {
